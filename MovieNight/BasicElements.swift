@@ -12,3 +12,8 @@ struct Genre {
     let id: Int
     let name: String
 }
+
+struct Movie {
+    let id: Int
+    let title: String
+}

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class APIClient {
     
@@ -94,5 +95,46 @@ class APIClient {
         task.resume()
     }
 
-    
+    // load image for movie
+    func downloadLoadImageData(imagePath:String , completionHandler: @escaping (UIImage)-> Void )
+    {
+        
+        let urlString = "https://image.tmdb.org/t/p/w300\(imagePath)"
+        let url = URL(string: urlString)
+        let task = session.dataTask(with: url!) { data,response,error in
+            
+            guard let response = response as? HTTPURLResponse else {
+                // Missing HTTP response error
+                print("Missing HTTP response")
+                return
+            }
+            
+            if  let data = data
+            {
+                print("Data retuned, trying to convert to json ")
+                if response.statusCode == 200 {
+                    
+                    if let image = UIImage(data: data) {
+                        print("Image Data successful ..")
+                        completionHandler(image)
+                    }
+                    else {
+                        print("Image conversion failed  ..")
+                    }
+                    
+                    
+                }
+                else {
+                    print("Response was not successful . .error code: \(response.statusCode) ")
+                }
+            }
+            else {
+                // data is nil
+                print("No Data returned")
+            }
+            
+        }
+        task.resume()
+    }
+
 }
