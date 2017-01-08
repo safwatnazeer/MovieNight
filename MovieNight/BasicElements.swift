@@ -17,3 +17,10 @@ struct Movie {
     let id: Int
     let title: String
 }
+
+struct Actor {
+    let id: Int
+    let name: String
+    let profilePath: String
+    
+}

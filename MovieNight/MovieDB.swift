@@ -17,44 +17,7 @@ class APIClient {
         session = URLSession(configuration: URLSessionConfiguration.default )
         
     }
-    func downloadJSON<T>(urlString:String, parse:@escaping ([String:AnyObject])-> T , completionHandler: @escaping (T) -> Void) {
-        
-        
-        let url = URL(string: urlString)
-        let task = session.dataTask(with: url!) { data,response,error in
-            
-            guard let response = response as? HTTPURLResponse else {
-                // Missing HTTP response error
-                print("Missing HTTP response")
-                return
-            }
-            
-            if  let data = data
-            {
-                print("Data retuned, trying to convert to json ")
-                if response.statusCode == 200 {
-                    do {
-                        let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String:AnyObject]
-                        print("JSON Data successful ..")
-                        print("\(json)")
-                        let value = parse(json!)
-                        completionHandler(value)
-                    } catch let jsonError {
-                        print("Error converting JSON data: \(jsonError)")
-                    }
-                }
-                else {
-                    print("Response was not successful . .error code: \(response.statusCode) ")
-                }
-            }
-            else {
-                // data is nil
-                print("No Data returned")
-            }
-            
-        }
-        task.resume()
-    }
+
     
     func downloadJSONNEW(urlString:String, completionHandler: @escaping ([String:AnyObject]) -> Void) {
         
@@ -111,11 +74,11 @@ class APIClient {
             
             if  let data = data
             {
-                print("Data retuned, trying to convert to json ")
+               // print("Data retuned, trying to convert to json ")
                 if response.statusCode == 200 {
                     
                     if let image = UIImage(data: data) {
-                        print("Image Data successful ..")
+                      //  print("Image Data successful ..")
                         completionHandler(image)
                     }
                     else {
@@ -155,6 +118,8 @@ https://api.themoviedb.org/3/search/person?api_key=ae0b9efa77149c7c5c55edae3d42c
 - Get list of images for a movie 
 https://api.themoviedb.org/3/movie/188927/images?api_key=ae0b9efa77149c7c5c55edae3d42c5a9
  
+- Get list of popular actors
+ https://api.themoviedb.org/3/person/popular?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&language=en-US
  
  
  
