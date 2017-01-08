@@ -11,6 +11,9 @@ import UIKit
 class MoviesTableViewController: UITableViewController {
 
     
+    @IBOutlet weak var toolBarItem: UIBarButtonItem!
+    
+    
     var movieDBClient: MovieDBClient?
     var genresList:[Int]?   // array contains indices of selected Genres
     var actorsList: [Int]?  // array contains indices of selected Actors
@@ -20,9 +23,28 @@ class MoviesTableViewController: UITableViewController {
     var selectedItems=[Int]()
     var totalPages = 1
     
+    @IBAction func done(_ sender: Any) {
+        print(selectedItems)
+        movieDBClient?.selectedMovies = selectedItems
+        for index in selectedItems {
+            movieDBClient!.selectedMoviesList.append(movieDBClient!.movieList[index])
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        // setup navigation contoller appearence
+        navigationController?.navigationBar.barTintColor = UIColor.red
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         
+        tableView.separatorStyle = .none
+        navigationController?.toolbar.barTintColor = UIColor.red
+        
+        
+        //
+        updateToolbar()
         
         
         loadNextPage()

@@ -175,7 +175,7 @@
                         <barButtonItem key="rightBarButtonItem" title="Results" id="i98-mT-ofn">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
-                                <segue destination="DK6-wv-ycF" kind="show" identifier="showMovies" id="pgK-a8-j1s"/>
+                                <segue destination="DK6-wv-ycF" kind="show" identifier="showMovies" id="zEg-uB-LaS"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -191,42 +191,51 @@
         <scene sceneID="W03-BF-1fk">
             <objects>
                 <tableViewController id="DK6-wv-ycF" customClass="MoviesTableViewController" customModule="MovieNight" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Xcw-Ab-uMH">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="78" sectionHeaderHeight="28" sectionFooterHeight="28" id="Xcw-Ab-uMH">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="ug7-GZ-2ky" customClass="CustomMovieCell" customModule="MovieNight" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="320" height="44"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="78" id="ug7-GZ-2ky" customClass="CustomMovieCell" customModule="MovieNight" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="320" height="78"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ug7-GZ-2ky" id="Y4t-Qb-ySS">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="77"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="32g-0X-qQ9" userLabel="cellLabel">
-                                            <rect key="frame" x="294.5" y="18" width="17.5" height="8.5"/>
-                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="7"/>
+                                            <rect key="frame" x="55" y="28.5" width="44.5" height="21"/>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="empty2" translatesAutoresizingMaskIntoConstraints="NO" id="eDQ-FH-VWI">
-                                            <rect key="frame" x="0.0" y="-1" width="45" height="45"/>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="empty2" translatesAutoresizingMaskIntoConstraints="NO" id="eDQ-FH-VWI" userLabel="Cell Image">
+                                            <rect key="frame" x="0.0" y="16.5" width="45" height="45"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="45" id="aPg-wZ-Ih9"/>
                                                 <constraint firstAttribute="height" constant="45" id="bkS-vW-g5H"/>
                                             </constraints>
                                         </imageView>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="horizontal-line" translatesAutoresizingMaskIntoConstraints="NO" id="I05-yC-ewC">
+                                            <rect key="frame" x="0.0" y="76.5" width="320" height="1"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="0.5" id="7Up-c1-wpN"/>
+                                            </constraints>
+                                        </imageView>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstAttribute="trailingMargin" secondItem="32g-0X-qQ9" secondAttribute="trailing" id="1KY-cU-stx"/>
                                         <constraint firstItem="32g-0X-qQ9" firstAttribute="centerY" secondItem="Y4t-Qb-ySS" secondAttribute="centerY" id="F4C-W3-bcJ"/>
                                         <constraint firstItem="eDQ-FH-VWI" firstAttribute="centerY" secondItem="Y4t-Qb-ySS" secondAttribute="centerY" id="Kyz-Mh-pbr"/>
+                                        <constraint firstAttribute="trailing" secondItem="I05-yC-ewC" secondAttribute="trailing" id="bK0-cw-1gF"/>
+                                        <constraint firstAttribute="bottom" secondItem="I05-yC-ewC" secondAttribute="bottom" id="fxU-S9-U53"/>
                                         <constraint firstItem="32g-0X-qQ9" firstAttribute="centerY" secondItem="Y4t-Qb-ySS" secondAttribute="centerY" id="pQj-Ya-4ud"/>
+                                        <constraint firstItem="32g-0X-qQ9" firstAttribute="leading" secondItem="eDQ-FH-VWI" secondAttribute="trailing" constant="10" id="par-70-2sx"/>
+                                        <constraint firstItem="I05-yC-ewC" firstAttribute="leading" secondItem="Y4t-Qb-ySS" secondAttribute="leading" id="wKQ-J2-jcF"/>
                                         <constraint firstItem="eDQ-FH-VWI" firstAttribute="leading" secondItem="Y4t-Qb-ySS" secondAttribute="leading" id="yh6-Ep-VG0"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="cellIamge" destination="eDQ-FH-VWI" id="Ltu-Nl-0jB"/>
+                                    <outlet property="cellImage" destination="eDQ-FH-VWI" id="3dO-l9-BCN"/>
                                     <outlet property="cellLabel" destination="32g-0X-qQ9" id="WsC-x4-abp"/>
                                 </connections>
                             </tableViewCell>
@@ -236,13 +245,29 @@
                             <outlet property="delegate" destination="DK6-wv-ycF" id="5tW-02-hmd"/>
                         </connections>
                     </tableView>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="ZAN-TH-shd"/>
+                        <barButtonItem title="Item" style="done" id="3Oi-Iw-P60">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="kXW-gK-EMo"/>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" title="Movies" id="FSE-vZ-lcS">
                         <barButtonItem key="backBarButtonItem" title=" " id="u6z-HC-Erm"/>
+                        <barButtonItem key="rightBarButtonItem" title="Done" id="Zy9-IN-Tgv">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="done:" destination="DK6-wv-ycF" id="4la-4U-hYc"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="toolBarItem" destination="3Oi-Iw-P60" id="NEt-qS-c35"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aoe-3h-OmR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4498" y="676"/>
+            <point key="canvasLocation" x="4496.25" y="675"/>
         </scene>
         <!--Poster View Controller-->
         <scene sceneID="Mhj-yk-QJm">
@@ -346,7 +371,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IeY-Kk-KRc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="566.25" y="657.04225352112678"/>
+            <point key="canvasLocation" x="699" y="675"/>
         </scene>
     </scenes>
     <resources>

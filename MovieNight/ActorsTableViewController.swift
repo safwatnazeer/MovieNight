@@ -147,7 +147,7 @@ class ActorsTableViewController: UITableViewController {
                 vc.genresList = genresList
                 movieDBClient?.selectedGenres = genresList
                 movieDBClient?.selectedActors = selectedItems
-                
+                movieDBClient?.movieList.removeAll()
                 if let currentUser = movieDBClient?.currentUserSelecting , let usersWhoFinished =  movieDBClient?.usersWhoFinishedSelection {
                     if (!usersWhoFinished.contains(currentUser)) {
                         movieDBClient?.usersWhoFinishedSelection.append(currentUser)
@@ -156,8 +156,7 @@ class ActorsTableViewController: UITableViewController {
                 vc.navigationItem.title = "Select Movies"
             }
         }
-        
     }
 
-
+   
 }
