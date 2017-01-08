@@ -10,11 +10,12 @@ import UIKit
 
 class ActorsTableViewController: UITableViewController {
     @IBOutlet weak var toolBarItem: UIBarButtonItem!
+    
 
     var movieDBClient: MovieDBClient?
     var currentPage:Int = 0
     var stillLoading = false
-    var showList = [Actor]()
+    var genresList:[Int]?
     var selectedItems=[Int]()
     
     override func viewDidLoad() {
@@ -36,12 +37,13 @@ class ActorsTableViewController: UITableViewController {
         
     }
     
+    
     func loadNextPage(){
         stillLoading = true
         if let movieDBClient = self.movieDBClient {
             movieDBClient.loadActorsList(pageNumber: currentPage + 1 ) {
                 list in
-                self.showList.append(contentsOf: list)
+                movieDBClient.actorsList.append(contentsOf: list)
                 self.currentPage += 1
                 self.stillLoading = false
                 DispatchQueue.main.async {
@@ -67,7 +69,7 @@ class ActorsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return showList.count
+        return movieDBClient!.actorsList.count
     }
 
     
@@ -76,7 +78,7 @@ class ActorsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomActorCell
         
         // set name
-        cell.cellLabel.text = showList[indexPath.row].name
+        cell.cellLabel.text = movieDBClient?.actorsList[indexPath.row].name
         // set selection image
         if (selectedItems.contains(indexPath.row)) {
             cell.cellImage.image = UIImage(named: "selected")
@@ -86,7 +88,7 @@ class ActorsTableViewController: UITableViewController {
         
         // get image 
         if let movieDBClient = self.movieDBClient {
-            movieDBClient.apiClient.downloadLoadImageData(imagePath: showList[indexPath.row].profilePath) {
+            movieDBClient.apiClient.downloadLoadImageData(imagePath: movieDBClient.actorsList[indexPath.row].profilePath) {
                 image in
                 DispatchQueue.main.async {
                     cell.actorImage.image = image
@@ -102,7 +104,7 @@ class ActorsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         print ("Will display called for: \(indexPath.row)")
-        let diff = showList.count - (indexPath.row + 1)
+        let diff = movieDBClient!.actorsList.count - (indexPath.row + 1)
         if (diff < 1) {
             print("Loading next page after: \(currentPage)")
             loadNextPage()
@@ -137,7 +139,25 @@ class ActorsTableViewController: UITableViewController {
         toolBarItem.title =  "\(selectedItems.count) of 5 selected"
     }
 
-
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "showMovies") {
+            if let vc = segue.destination as? MoviesTableViewController, let genresList = self.genresList  {
+                vc.movieDBClient = movieDBClient
+                vc.actorsList = selectedItems
+                vc.genresList = genresList
+                movieDBClient?.selectedGenres = genresList
+                movieDBClient?.selectedActors = selectedItems
+                
+                if let currentUser = movieDBClient?.currentUserSelecting , let usersWhoFinished =  movieDBClient?.usersWhoFinishedSelection {
+                    if (!usersWhoFinished.contains(currentUser)) {
+                        movieDBClient?.usersWhoFinishedSelection.append(currentUser)
+                    }
+                }
+                vc.navigationItem.title = "Select Movies"
+            }
+        }
+        
+    }
 
 
 }

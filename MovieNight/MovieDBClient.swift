@@ -13,6 +13,12 @@ class MovieDBClient {
     let apiClient = APIClient()
     var genresList = [Genre]()
     var actorsList = [Actor]()
+    var movieList = [Movie]()
+    
+    var selectedGenres = [Int]()
+    var selectedActors = [Int]()
+    var usersWhoFinishedSelection = [UsersList]()
+    var currentUserSelecting : UsersList = .noOne
     
     
     // load genres
@@ -38,25 +44,10 @@ class MovieDBClient {
         }
     }
     
-    func prepareGenresList (genreIDs:[Int]) ->String {
-        
-        var selectedGenres = ""
-        if (genreIDs.count > 1)
-        {
-            for i in 0...genreIDs.count-2 {
-                selectedGenres += "\(genresList[genreIDs[i]].id),"
-            }
-            selectedGenres += "\(genresList[genreIDs[genreIDs.count-1]].id)"
-        }
-        else {
-            selectedGenres = "\(genresList[genreIDs[0]].id)"
-        }
-        
-       return selectedGenres
-    }
+    
     
 
-            // load MovieImages for genre
+        // load MovieImages for genre
         func loadImageList(movieId: Int, completionHandler: @escaping ([String])-> Void )
         {
             var imagePathList = [String]()
@@ -103,12 +94,55 @@ class MovieDBClient {
             completionHandler(tempList)
         }
     }
+    
+    func prepareGenresList(listOfIDs:[Int]) ->String {
+        var selectedText = ""
+        if (listOfIDs.count > 0) {
+            selectedText += "&with_genres="
+            if (listOfIDs.count > 1)
+            {
+                for i in 0...listOfIDs.count-2 {
+                    selectedText += "\(genresList[listOfIDs[i]].id),"
+                }
+                selectedText += "\(genresList[listOfIDs[listOfIDs.count-1]].id)"
+            }
+            else {
+                selectedText += "\(genresList[listOfIDs[0]].id)"
+            }
+        }
+        return selectedText
+    }
+    
+    // prepare url elements
+    func prepareActorsList(listOfIDs:[Int]) ->String {
+        var selectedText = ""
+        if (listOfIDs.count > 0) {
+            selectedText += "&with_cast="
+            if (listOfIDs.count > 1)
+            {
+                for i in 0...listOfIDs.count-2 {
+                    selectedText += "\(actorsList[listOfIDs[i]].id),"
+                }
+                selectedText += "\(actorsList[listOfIDs[listOfIDs.count-1]].id)"
+            }
+            else {
+                selectedText += "\(actorsList[listOfIDs[0]].id)"
+            }
+        }
+        print(selectedText)
+        return selectedText
+    }
+    
     // load movies for genre
-    func loadMovies(for genreIDs: [Int],pageNumber:Int, completionHandler: @escaping ([Movie])-> Void )
+    func loadMovies(for genresIDs:[Int],actorsIDs:[Int] ,pageNumber:Int, completionHandler: @escaping ([Movie],Int)-> Void )
     {
-        let selectedGenres = prepareGenresList(genreIDs: genreIDs)
+        let selectedGenres   = prepareGenresList(listOfIDs: genresIDs)
+        let selectedActors = prepareActorsList(listOfIDs: actorsIDs)
+        
         var tempList = [Movie]()
-        let urlString = "https://api.themoviedb.org/3/discover/movie?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&with_genres=\(selectedGenres)&page=\(pageNumber)&sort_by=popularity.desc&with_cast=500"
+        let urlString = "https://api.themoviedb.org/3/discover/movie?api_key=ae0b9efa77149c7c5c55edae3d42c5a9\(selectedGenres)&page=\(pageNumber)&sort_by=popularity.desc\(selectedActors)"
+        
+        print(urlString)
         apiClient.downloadJSONNEW(urlString: urlString) {
             json in
             
@@ -123,11 +157,13 @@ class MovieDBClient {
                     }
                 }
             }
-            
-            if let pageCount = json["total_pages"] {
+            var totalPages = 0
+            if let pageCount = json["total_pages"] as? Int{
                 print ("total pages = \(pageCount)")
+                totalPages = pageCount
             }
-            completionHandler(tempList)
+            print(totalPages)
+            completionHandler(tempList,totalPages)
             
         }
     }

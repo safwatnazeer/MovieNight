@@ -13,11 +13,11 @@ import UIKit
 class GenresTableViewController: UITableViewController {
 
     @IBOutlet weak var toolBarItem: UIBarButtonItem!
-    let movieDBClient = MovieDBClient()
+    
     var stillLoading = false
     
     var selectedItems=[Int]()
-    
+    var movieDBClient : MovieDBClient?
     
     
     override func viewDidLoad() {
@@ -30,14 +30,17 @@ class GenresTableViewController: UITableViewController {
         tableView.separatorStyle = .none
         navigationController?.toolbar.barTintColor = UIColor.red
         
-        
+        if let navCont = navigationController as? CustomNavigationController {
+            print(navCont.movieDBClient!)
+            movieDBClient = navCont.movieDBClient
+        }
         //
         updateToolbar()
         
         //// list of genres
         stillLoading = true
         
-        movieDBClient.loadGenreList() {
+        movieDBClient?.loadGenreList() {
             DispatchQueue.main.async {
          
             
@@ -64,9 +67,12 @@ class GenresTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        print ("geners list = \(movieDBClient.genresList.count)")
-        return  movieDBClient.genresList.count
-        
+        if (!stillLoading) {
+        print ("geners list = \(movieDBClient?.genresList.count)")
+            return  (movieDBClient?.genresList.count)!
+        } else {
+            return 0
+        }
         
     }
 
@@ -76,7 +82,7 @@ class GenresTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomCell
         
         
-        cell.cellLabel.text = movieDBClient.genresList[indexPath.row].name
+        cell.cellLabel.text = movieDBClient?.genresList[indexPath.row].name
         // set selection image
         if (selectedItems.contains(indexPath.row)) {
             cell.cellImage.image = UIImage(named: "selected")
@@ -122,18 +128,12 @@ class GenresTableViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
         
-        if (segue.identifier == "showMovies") {
-            if let vc = segue.destination as? MoviesTableViewController {
-                vc.movieDBClient = movieDBClient
-                vc.option = selectedItems
-                vc.navigationItem.title = "Select Movies"
-            }
-        }
-        else
         if(segue.identifier == "showActors") {
             if let vc = segue.destination as? ActorsTableViewController {
+                movieDBClient?.actorsList.removeAll()
                 vc.movieDBClient = movieDBClient
-               // vc.option = selectedItems
+                vc.genresList = selectedItems
+                movieDBClient?.selectedGenres = selectedItems
                 vc.navigationItem.title = "Select Actors"
             }
     

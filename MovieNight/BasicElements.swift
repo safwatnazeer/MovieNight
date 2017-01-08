@@ -24,3 +24,9 @@ struct Actor {
     let profilePath: String
     
 }
+
+enum UsersList {
+    case noOne
+    case firstUser
+    case secondUser
+}

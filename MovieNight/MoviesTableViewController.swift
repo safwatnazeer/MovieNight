@@ -10,33 +10,33 @@ import UIKit
 
 class MoviesTableViewController: UITableViewController {
 
+    
     var movieDBClient: MovieDBClient?
-    var option:[Int]? // array contains indices of selected Genres
+    var genresList:[Int]?   // array contains indices of selected Genres
+    var actorsList: [Int]?  // array contains indices of selected Actors
     var currentPage:Int = 0
     
     var stillLoading = false
-    var showList = [Movie]()
+    var selectedItems=[Int]()
+    var totalPages = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
         
         
         loadNextPage()
         
     }
+    
 
     func loadNextPage(){
         stillLoading = true
-        if let option = self.option , let movieDBClient = self.movieDBClient {
-            movieDBClient.loadMovies(for: option, pageNumber: currentPage + 1 ) { list in
-                self.showList.append(contentsOf: list)
+        if let generesList = self.genresList , let movieDBClient = self.movieDBClient , let actorsList = self.actorsList {
+            movieDBClient.loadMovies(for: generesList, actorsIDs: actorsList ,pageNumber: currentPage + 1 ) { list, totalPages in
+                movieDBClient.movieList.append(contentsOf: list)
                 self.currentPage += 1
+                self.totalPages = totalPages
                 self.stillLoading = false
                 DispatchQueue.main.async {
                     // update UI
@@ -53,8 +53,9 @@ class MoviesTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         print ("Will display called for: \(indexPath.row)")
-        let diff = showList.count - (indexPath.row + 1)
-        if (diff < 1) {
+        let diff = movieDBClient!.movieList.count - (indexPath.row + 1)
+        print ("diff = \(diff) , showList count =\(movieDBClient?.movieList.count), IndexPath+1 = \(indexPath.row+1) ")
+        if (diff < 1 && currentPage < totalPages) {
             print("Loading next page after: \(currentPage)")
             loadNextPage()
         }
@@ -68,17 +69,23 @@ class MoviesTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        print ("list = \(showList.count)")
-        return showList.count
+        print ("list = \(movieDBClient?.movieList.count)")
+        return movieDBClient!.movieList.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomMovieCell
 
-        cell.textLabel?.text = showList[indexPath.row].title
-        let id = showList[indexPath.row].id
-        cell.detailTextLabel?.text = "\(id)"
+        cell.cellLabel.text = movieDBClient?.movieList[indexPath.row].title
+        // set selection image
+        if (selectedItems.contains(indexPath.row)) {
+            cell.cellImage.image = UIImage(named: "selected")
+        } else {
+            cell.cellImage.image = UIImage(named: "empty2")
+        }
+        //let id = showList[indexPath.row].id
+        //cell.detailTextLabel?.text = "\(id)"
 
         return cell
     }
@@ -88,11 +95,9 @@ class MoviesTableViewController: UITableViewController {
     
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if let vc = segue.destination as? PosterViewController {
             vc.movieDBClient = movieDBClient
-            vc.movieId = 188927
             if let cell = sender as? UITableViewCell, let detailText = cell.detailTextLabel?.text {
                 let id = Int(detailText)
                 vc.movieId = id!
@@ -102,5 +107,32 @@ class MoviesTableViewController: UITableViewController {
     
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath) as! CustomMovieCell
+        
+        if (selectedItems.contains(indexPath.row)) {
+            cell.cellImage.image = UIImage(named: "empty2")
+            // cell.cellSelected = false
+            let itemIndex = selectedItems.index(of: indexPath.row)
+            selectedItems.remove(at: itemIndex!)
+            updateToolbar()
+        } else {
+            if (selectedItems.count < 5 ) {
+                cell.cellImage.image = UIImage(named: "selected")
+                //   cell.cellSelected = true
+                if (!selectedItems.contains(indexPath.row)) {selectedItems.append(indexPath.row) }
+                updateToolbar()
+            }
+        }
+        print(selectedItems)
+        //cell.cellLabel.text = movieDBClient.genresList[indexPath.row].name
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
+        tableView.deselectRow(at: indexPath, animated: false)
+        
+    }
+    func updateToolbar() {
+        toolBarItem.title =  "\(selectedItems.count) of 5 selected"
+    }
+
 
 }
