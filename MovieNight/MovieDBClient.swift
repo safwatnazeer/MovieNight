@@ -20,6 +20,8 @@ class MovieDBClient {
     var selectedMovies = [Int]()
     
     var selectedMoviesList = [Movie]()
+    var votedMovies = [MovieVote]()
+    
     
     var usersWhoFinishedSelection = [UsersList]()
     var currentUserSelecting : UsersList = .noOne

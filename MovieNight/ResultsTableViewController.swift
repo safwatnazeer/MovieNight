@@ -14,8 +14,6 @@ class ResultsTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-       
     }
 
     
@@ -38,8 +36,28 @@ class ResultsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomResultsCell
 
         cell.cellLabel.text = movieDBClient?.selectedMoviesList[indexPath.row].title
-
+        cell.initializeCellColors()
+        if let votedMovies = movieDBClient?.votedMovies {
+            cell.markVotes(movieVotes: votedMovies)
+        }
         return cell
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if(segue.identifier == "goBack") {
+            
+                movieDBClient?.votedMovies.removeAll()
+            
+            print(tableView.numberOfRows(inSection: 0))
+                for row in 0..<tableView.numberOfRows(inSection: 0) {
+                     let cell = tableView.cellForRow(at: IndexPath(row: row, section: 0)) as! CustomResultsCell
+                    let vote = MovieVote(title: cell.cellLabel.text!, vote1: cell.button1Voted,vote2: cell.button2Voted)
+                    movieDBClient?.votedMovies.append(vote)
+            }
+            
+        }
+
     }
     
 

@@ -30,3 +30,9 @@ enum UsersList {
     case firstUser
     case secondUser
 }
+
+struct MovieVote {
+    var title: String
+    var vote1: Bool
+    var vote2: Bool
+}
