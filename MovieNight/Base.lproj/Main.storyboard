@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="3rf-Yl-fgD">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="6Uw-MH-2D6">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -258,6 +258,7 @@
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <action selector="done:" destination="DK6-wv-ycF" id="4la-4U-hYc"/>
+                                <segue destination="xtD-sK-oF6" kind="unwind" identifier="goBack" unwindAction="goBackToMainWithSegue:" id="Dzg-AB-Sa8"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -266,42 +267,9 @@
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aoe-3h-OmR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="xtD-sK-oF6" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="4496.25" y="675"/>
-        </scene>
-        <!--Poster View Controller-->
-        <scene sceneID="Mhj-yk-QJm">
-            <objects>
-                <viewController id="GEr-qu-dbT" customClass="PosterViewController" customModule="MovieNight" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="hOo-Nk-iT4"/>
-                        <viewControllerLayoutGuide type="bottom" id="T9g-sF-QF0"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="wBM-sP-MUB">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="AbO-Jb-uze">
-                                <rect key="frame" x="36" y="144" width="248" height="280"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="280" id="z0B-gd-dvO"/>
-                                </constraints>
-                            </imageView>
-                        </subviews>
-                        <color key="backgroundColor" red="1" green="0.64852835689999999" blue="0.47165654610000002" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstItem="AbO-Jb-uze" firstAttribute="leading" secondItem="wBM-sP-MUB" secondAttribute="leadingMargin" constant="20" id="UI8-lr-P43"/>
-                            <constraint firstItem="AbO-Jb-uze" firstAttribute="centerY" secondItem="wBM-sP-MUB" secondAttribute="centerY" id="yU9-Br-L1f"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="AbO-Jb-uze" secondAttribute="trailing" constant="20" id="zYB-ME-p6S"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="imageView" destination="AbO-Jb-uze" id="BT8-ew-aXz"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="3sK-KE-dsh" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="5462" y="675"/>
         </scene>
         <!--Custom Navigation Controller-->
         <scene sceneID="OcB-cd-5Td">
@@ -321,14 +289,14 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </toolbar>
                     <connections>
-                        <segue destination="d46-dU-qfp" kind="relationship" relationship="rootViewController" id="j0i-3E-tPs"/>
+                        <segue destination="3rf-Yl-fgD" kind="relationship" relationship="rootViewController" id="OUp-XD-op0"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eOE-yi-v6Z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1553" y="677"/>
+            <point key="canvasLocation" x="473" y="675"/>
         </scene>
-        <!--Main View Controller-->
+        <!--Movie Night-->
         <scene sceneID="EBe-jC-Vui">
             <objects>
                 <viewController id="3rf-Yl-fgD" customClass="MainViewController" customModule="MovieNight" customModuleProvider="target" sceneMemberID="viewController">
@@ -337,17 +305,17 @@
                         <viewControllerLayoutGuide type="bottom" id="isF-8m-afK"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="1np-VW-xdz">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bg-iphone6" translatesAutoresizingMaskIntoConstraints="NO" id="tqt-gG-sch">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <rect key="frame" x="0.0" y="44" width="320" height="480"/>
                             </imageView>
                             <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bubble-empty" translatesAutoresizingMaskIntoConstraints="NO" id="ibu-Xg-jCN">
-                                <rect key="frame" x="181" y="188" width="123" height="97"/>
+                                <rect key="frame" x="181" y="232" width="123" height="97"/>
                             </imageView>
                             <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bubble-empty" translatesAutoresizingMaskIntoConstraints="NO" id="5Lw-Iu-5wj">
-                                <rect key="frame" x="16" y="188" width="123" height="97"/>
+                                <rect key="frame" x="16" y="232" width="123" height="97"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -362,16 +330,24 @@
                             <constraint firstItem="tqt-gG-sch" firstAttribute="top" secondItem="l9r-zO-pqD" secondAttribute="bottom" constant="-20" id="wm3-OL-rZI"/>
                         </constraints>
                     </view>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="CRc-e7-rF2"/>
+                        <barButtonItem title="Show Results" style="done" id="hqa-ri-ejQ"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="1eq-oX-SOX"/>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Movie Night" id="0ME-KM-6dT">
+                        <barButtonItem key="backBarButtonItem" title=" " id="n6L-KQ-dMq"/>
+                    </navigationItem>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <connections>
                         <outlet property="firstBubble" destination="5Lw-Iu-5wj" id="h2N-Tb-kal"/>
                         <outlet property="secondBubble" destination="ibu-Xg-jCN" id="CG2-MM-Qzw"/>
-                        <segue destination="6Uw-MH-2D6" kind="show" identifier="showGenres" animates="NO" id="NM6-CF-Zpi"/>
+                        <segue destination="d46-dU-qfp" kind="show" identifier="showGenres" id="5Vs-8w-gN1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IeY-Kk-KRc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="699" y="675"/>
+            <point key="canvasLocation" x="1487" y="675"/>
         </scene>
     </scenes>
     <resources>

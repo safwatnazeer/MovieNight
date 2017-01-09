@@ -26,6 +26,9 @@ class MainViewController: UIViewController {
         firstBubble.addGestureRecognizer(gestureRecognizerFirst)
         secondBubble.addGestureRecognizer(gestureRecognizerSecond)
         
+        // hide tool bar 
+       // navigationController?.setToolbarHidden(true, animated: false)
+        
     }
 
     func recognizerActionFirst() {
@@ -49,7 +52,7 @@ class MainViewController: UIViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if(segue.identifier == "showGenres") {
-            if let vc = segue.destination as? CustomNavigationController {
+            if let vc = segue.destination as? GenresTableViewController {
                 vc.movieDBClient = movieDBClient
                 
             }
@@ -65,6 +68,18 @@ class MainViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         print(movieDBClient.selectedMovies)
+    }
+    
+    @IBAction func goBackToMain(segue: UIStoryboardSegue) {
+        print ("Here is back from segue")
+        // change pictures
+        print ("selected movies list: \(movieDBClient.selectedMoviesList)")
+        if (movieDBClient.usersWhoFinishedSelection.count > 0) {
+            if (movieDBClient.usersWhoFinishedSelection.contains(UsersList.firstUser)) { firstBubble.image = UIImage(named: "bubble-selected")
+            }
+            if (movieDBClient.usersWhoFinishedSelection.contains(UsersList.secondUser)) { secondBubble.image = UIImage(named: "bubble-selected")
+            }
+        }
     }
 
 }

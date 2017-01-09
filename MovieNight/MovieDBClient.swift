@@ -172,6 +172,11 @@ class MovieDBClient {
         }
     }
 
+    func addUser() {
+        if (!usersWhoFinishedSelection.contains(currentUserSelecting)) {
+            usersWhoFinishedSelection.append(currentUserSelecting)
+        }
+    }
 }
 
 

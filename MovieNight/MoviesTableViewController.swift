@@ -24,13 +24,8 @@ class MoviesTableViewController: UITableViewController {
     var totalPages = 1
     
     @IBAction func done(_ sender: Any) {
-        print(selectedItems)
-        movieDBClient?.selectedMovies = selectedItems
-        for index in selectedItems {
-            movieDBClient!.selectedMoviesList.append(movieDBClient!.movieList[index])
-        }
         
-        dismiss(animated: true, completion: nil)
+        
     }
     
     override func viewDidLoad() {
@@ -118,15 +113,26 @@ class MoviesTableViewController: UITableViewController {
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if let vc = segue.destination as? PosterViewController {
-            vc.movieDBClient = movieDBClient
-            if let cell = sender as? UITableViewCell, let detailText = cell.detailTextLabel?.text {
-                let id = Int(detailText)
-                vc.movieId = id!
-                vc.navigationItem.title = cell.textLabel?.text
+        
+    
+        // go back to main controller
+        if (segue.identifier == "goBack") {
+            if let vc = segue.destination as? MainViewController {
+            
+                // copy selected movies to the movieDBClient
+                print("List of selected movies indices:\(selectedItems)")
+                movieDBClient?.selectedMovies = selectedItems
+                for index in selectedItems {
+                    print("adding film index: \(index) , movie: \(movieDBClient!.movieList[index])")
+                    movieDBClient!.selectedMoviesList.append(movieDBClient!.movieList[index])
+                }
+                // add user to list of who finished selection
+                movieDBClient?.addUser()
+                print("\(movieDBClient!.selectedMoviesList)")
+                
             }
         }
-    
+        
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -156,5 +162,6 @@ class MoviesTableViewController: UITableViewController {
         toolBarItem.title =  "\(selectedItems.count) of 5 selected"
     }
 
-
+    
+    
 }

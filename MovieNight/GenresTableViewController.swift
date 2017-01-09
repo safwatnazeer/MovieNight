@@ -30,11 +30,7 @@ class GenresTableViewController: UITableViewController {
         tableView.separatorStyle = .none
         navigationController?.toolbar.barTintColor = UIColor.red
         
-        if let navCont = navigationController as? CustomNavigationController {
-            print(navCont.movieDBClient!)
-            movieDBClient = navCont.movieDBClient
-        }
-        //
+        
         updateToolbar()
         
         //// list of genres
@@ -69,7 +65,7 @@ class GenresTableViewController: UITableViewController {
         
         if (!stillLoading) {
         print ("geners list = \(movieDBClient?.genresList.count)")
-            return  (movieDBClient?.genresList.count)!
+            return  movieDBClient!.genresList.count
         } else {
             return 0
         }
