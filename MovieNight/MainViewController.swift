@@ -58,7 +58,14 @@ class MainViewController: UIViewController {
             }
             
         }
-
+        
+        if(segue.identifier == "showResutls") {
+            if let vc = segue.destination as? ResultsTableViewController {
+                vc.movieDBClient = movieDBClient
+                
+            }
+            
+        }
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

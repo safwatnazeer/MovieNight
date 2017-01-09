@@ -18,6 +18,7 @@ class ActorsTableViewController: UITableViewController {
     var genresList:[Int]?
     var selectedItems=[Int]()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
