@@ -58,7 +58,7 @@ class APIClient {
         task.resume()
     }
 
-    // load image for movie
+    // load image 
     func downloadLoadImageData(imagePath:String , completionHandler: @escaping (UIImage)-> Void )
     {
         
@@ -101,8 +101,11 @@ class APIClient {
     }
 
 }
+
+
+
 /*
-Query url:
+Query urls:
 - search for an actor:
 https://api.themoviedb.org/3/search/person?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&language=en-US&query=%22Tom%20Hanks%22
 

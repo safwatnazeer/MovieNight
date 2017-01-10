@@ -13,7 +13,9 @@ class MainViewController: UIViewController {
     // outlets
     @IBOutlet weak var firstBubble: UIImageView!
     @IBOutlet weak var secondBubble: UIImageView!
-    let movieDBClient = MovieDBClient()
+    
+    // model instance
+    let movieDB = MovieDB()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,19 +28,18 @@ class MainViewController: UIViewController {
         firstBubble.addGestureRecognizer(gestureRecognizerFirst)
         secondBubble.addGestureRecognizer(gestureRecognizerSecond)
         
-        // hide tool bar 
-       // navigationController?.setToolbarHidden(true, animated: false)
+        
         
     }
 
     func recognizerActionFirst() {
         print("first pressed")
-        movieDBClient.currentUserSelecting = .firstUser
+        movieDB.currentUserSelecting = .firstUser
         performSegue(withIdentifier: "showGenres", sender: nil)
     }
     func recognizerActionSecond() {
         print("second pressed")
-        movieDBClient.currentUserSelecting = .secondUser
+        movieDB.currentUserSelecting = .secondUser
         performSegue(withIdentifier: "showGenres", sender: nil)
     }
 
@@ -48,23 +49,18 @@ class MainViewController: UIViewController {
     
     
     // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
         if(segue.identifier == "showGenres") {
             if let vc = segue.destination as? GenresTableViewController {
-                vc.movieDBClient = movieDBClient
-                
+                vc.movieDB = movieDB
             }
-            
         }
         
         if(segue.identifier == "showResutls") {
             if let vc = segue.destination as? ResultsTableViewController {
-                vc.movieDBClient = movieDBClient
-                
+                vc.movieDB = movieDB
             }
-            
         }
     }
     
@@ -73,18 +69,13 @@ class MainViewController: UIViewController {
     }
     
     
-    override func viewWillAppear(_ animated: Bool) {
-        print(movieDBClient.selectedMovies)
-    }
-    
     @IBAction func goBackToMain(segue: UIStoryboardSegue) {
-        print ("Here is back from segue")
-        // change pictures
-        print ("selected movies list: \(movieDBClient.selectedMoviesList)")
-        if (movieDBClient.usersWhoFinishedSelection.count > 0) {
-            if (movieDBClient.usersWhoFinishedSelection.contains(UsersList.firstUser)) { firstBubble.image = UIImage(named: "bubble-selected")
+        
+        // change images
+        if (movieDB.usersWhoFinishedSelection.count > 0) {
+            if (movieDB.usersWhoFinishedSelection.contains(UsersList.firstUser)) { firstBubble.image = UIImage(named: "bubble-selected")
             }
-            if (movieDBClient.usersWhoFinishedSelection.contains(UsersList.secondUser)) { secondBubble.image = UIImage(named: "bubble-selected")
+            if (movieDB.usersWhoFinishedSelection.contains(UsersList.secondUser)) { secondBubble.image = UIImage(named: "bubble-selected")
             }
         }
     }
@@ -95,7 +86,7 @@ class MainViewController: UIViewController {
         firstBubble.image = UIImage(named: "bubble-empty")
         secondBubble.image = UIImage(named: "bubble-empty")
         
-        movieDBClient.startOver()
+        movieDB.startOver()
     }
     
     

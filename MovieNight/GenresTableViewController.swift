@@ -15,31 +15,24 @@ class GenresTableViewController: UITableViewController {
     @IBOutlet weak var toolBarItem: UIBarButtonItem!
     
     var stillLoading = false
-    
-    var selectedItems=[Int]()
-    var movieDBClient : MovieDBClient?
-    
+    var selectedItems=[Int]() // an array to hold indices of selected Genres
+    var movieDB : MovieDB?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // setup navigation contoller appearence
-        navigationController?.navigationBar.barTintColor = UIColor.red
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-        
+       // navigationController?.navigationBar.barTintColor = UIColor.red
+       // navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         tableView.separatorStyle = .none
-        navigationController?.toolbar.barTintColor = UIColor.red
-        
+        //navigationController?.toolbar.barTintColor = UIColor.red
         
         updateToolbar()
         
-        //// list of genres
+        // get list of genres
         stillLoading = true
-        
-        movieDBClient?.loadGenreList() {
+        movieDB?.loadGenreList() {
             DispatchQueue.main.async {
-         
-            
             self.stillLoading = false
             print("now reload data..")
             self.tableView.reloadData()
@@ -57,15 +50,14 @@ class GenresTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
+        
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if (!stillLoading) {
-        print ("geners list = \(movieDBClient?.genresList.count)")
-            return  movieDBClient!.genresList.count
+            return  movieDB!.genresList.count
         } else {
             return 0
         }
@@ -73,48 +65,39 @@ class GenresTableViewController: UITableViewController {
     }
 
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print("cell for row \(indexPath.row)")
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomCell
+        cell.cellLabel.text = movieDB?.genresList[indexPath.row].name
         
-        
-        cell.cellLabel.text = movieDBClient?.genresList[indexPath.row].name
         // set selection image
         if (selectedItems.contains(indexPath.row)) {
             cell.cellImage.image = UIImage(named: "selected")
         } else {
             cell.cellImage.image = UIImage(named: "empty2")
         }
-
-        
-        //cell.contentView.backgroundColor = indexPath.row%2 == 0 ? UIColor.lightGray : UIColor.blue
         return cell
     }
-    
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath) as! CustomCell
         
+        // select and deselect logic
         if (selectedItems.contains(indexPath.row)) {
-                cell.cellImage.image = UIImage(named: "empty2")
-            
+            cell.cellImage.image = UIImage(named: "empty2")
             let itemIndex = selectedItems.index(of: indexPath.row)
             selectedItems.remove(at: itemIndex!)
             updateToolbar()
         } else {
-                if (selectedItems.count < 5 ) {
+                if (selectedItems.count < 5 ) // make sure we only select 5 items
+                {
                     cell.cellImage.image = UIImage(named: "selected")
-                    
                     if (!selectedItems.contains(indexPath.row)) {selectedItems.append(indexPath.row) }
                     updateToolbar()
                 }
         }
-        print(selectedItems)
-        //cell.cellLabel.text = movieDBClient.genresList[indexPath.row].name
         cell.selectionStyle = UITableViewCellSelectionStyle.none
-        
         tableView.deselectRow(at: indexPath, animated: false)
-        
     }
    
    
@@ -126,10 +109,10 @@ class GenresTableViewController: UITableViewController {
         
         if(segue.identifier == "showActors") {
             if let vc = segue.destination as? ActorsTableViewController {
-                movieDBClient?.actorsList.removeAll()
-                vc.movieDBClient = movieDBClient
+                movieDB?.actorsList.removeAll()
+                vc.movieDB = movieDB
                 vc.genresList = selectedItems
-                movieDBClient?.selectedGenres = selectedItems
+                movieDB?.selectedGenres = selectedItems
                 vc.navigationItem.title = "Select Actors"
             }
     

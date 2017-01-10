@@ -9,7 +9,9 @@
 import Foundation
 import UIKit
 
-class MovieDBClient {
+// Model class
+class MovieDB {
+    
     
     let apiClient = APIClient()
     var genresList = [Genre]()
@@ -115,6 +117,7 @@ class MovieDBClient {
         }
     }
 
+    // add user to array of users who finished selection
     func addUser() {
         if (!usersWhoFinishedSelection.contains(currentUserSelecting)) {
             usersWhoFinishedSelection.append(currentUserSelecting)

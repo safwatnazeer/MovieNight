@@ -14,7 +14,7 @@ class CustomActorCell: UITableViewCell {
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var actorImage: UIImageView!
     
-  //  var cellSelected: Bool = false
+  
 
     
     override func awakeFromNib() {
@@ -28,11 +28,4 @@ class CustomActorCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    override func prepareForReuse() {
-       
-//        self.cellLabel.text = "to be reused !!"
-//        self.cellSelected = false
-//        self.cellImage.image = UIImage(named: "empty2")
-    
-    }
 }
