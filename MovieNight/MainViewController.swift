@@ -89,4 +89,14 @@ class MainViewController: UIViewController {
         }
     }
 
+    // start over
+    @IBAction func startOver(_ sender: Any) {
+        
+        firstBubble.image = UIImage(named: "bubble-empty")
+        secondBubble.image = UIImage(named: "bubble-empty")
+        
+        movieDBClient.startOver()
+    }
+    
+    
 }

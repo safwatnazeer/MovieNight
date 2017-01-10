@@ -1,5 +1,5 @@
 //
-//  MovieDB.swift
+//  MovieDBClient.swift
 //  MovieNight
 //
 //  Created by Safwat Shenouda on 28/10/2016.
@@ -9,136 +9,173 @@
 import Foundation
 import UIKit
 
-class APIClient {
+class MovieDBClient {
     
-    let session: URLSession
+    let apiClient = APIClient()
+    var genresList = [Genre]()
+    var actorsList = [Actor]()
+    var movieList = [Movie]()
     
-    init () {
-        session = URLSession(configuration: URLSessionConfiguration.default )
-        
-    }
-
+    var selectedGenres = [Int]()
+    var selectedActors = [Int]()
+    var selectedMovies = [Int]()
     
-    func downloadJSONNEW(urlString:String, completionHandler: @escaping ([String:AnyObject]) -> Void) {
-        
-        
-        let url = URL(string: urlString)
-        let task = session.dataTask(with: url!) { data,response,error in
+    var selectedMoviesList = [Movie]()
+    var votedMovies = [MovieVote]()
+    
+    
+    var usersWhoFinishedSelection = [UsersList]()
+    var currentUserSelecting : UsersList = .noOne
+    
+    
+    // load genres
+    func loadGenreList(completionHandler: @escaping ()-> Void)
+     {
+        let urlString = "https://api.themoviedb.org/3/genre/movie/list?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&language=en-US"
+        apiClient.downloadJSONNEW(urlString: urlString) {
+            json in
             
-            guard let response = response as? HTTPURLResponse else {
-                // Missing HTTP response error
-                print("Missing HTTP response")
-                return
-            }
-            
-            if  let data = data
-            {
-                print("Data retuned, trying to convert to json ")
-                if response.statusCode == 200 {
-                    do {
-                        let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String:AnyObject]
-                        print("JSON Data successful ..")
-                       // print("\(json)")
-                        
-                        completionHandler(json!)
-                    } catch let jsonError {
-                        print("Error converting JSON data: \(jsonError)")
+            if let list = json["genres"] as? [[String:AnyObject]] {
+                
+                for genre in list {
+                    if let genreName = genre["name"] as? String , let id = genre["id"] as? Int {
+                        self.genresList.append(Genre(id: id, name: genreName))
                     }
                 }
-                else {
-                    print("Response was not successful . .error code: \(response.statusCode) ")
+            }
+                
+                for genre in self.genresList {
+                    print("Genre: \(genre.name) Id= \(genre.id)")
                 }
-            }
-            else {
-                // data is nil
-                print("No Data returned")
-            }
-            
+                completionHandler()
         }
-        task.resume()
     }
-
-    // load image for movie
-    func downloadLoadImageData(imagePath:String , completionHandler: @escaping (UIImage)-> Void )
+    
+    
+    // Get list of popular actors with pagination support
+    func loadActorsList(pageNumber:Int, completionHandler: @escaping ([Actor])-> Void)
     {
+        let urlString = "https://api.themoviedb.org/3/person/popular?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&language=en-US&page=\(pageNumber)"
         
-        let urlString = "https://image.tmdb.org/t/p/w300\(imagePath)"
-        let url = URL(string: urlString)
-        let task = session.dataTask(with: url!) { data,response,error in
-            
-            guard let response = response as? HTTPURLResponse else {
-                // Missing HTTP response error
-                print("Missing HTTP response")
-                return
-            }
-            
-            if  let data = data
-            {
-               // print("Data retuned, trying to convert to json ")
-                if response.statusCode == 200 {
-                    
-                    if let image = UIImage(data: data) {
-                      //  print("Image Data successful ..")
-                        completionHandler(image)
+        var tempList = [Actor]()
+        apiClient.downloadJSONNEW(urlString: urlString) {
+            json in
+    
+            if let list = json["results"] as? [[String:AnyObject]] {
+                
+                for actor in list {
+                    if let actorName = actor["name"] as? String , let id = actor["id"] as? Int, let profilePath = actor["profile_path"] as? String {
+                        tempList.append(Actor(id: id, name: actorName, profilePath:profilePath))
                     }
-                    else {
-                        print("Image conversion failed  ..")
-                    }
-                    
-                    
-                }
-                else {
-                    print("Response was not successful . .error code: \(response.statusCode) ")
                 }
             }
-            else {
-                // data is nil
-                print("No Data returned")
+            
+            for actor in self.actorsList {
+                print("Actors: \(actor.name) Id= \(actor.id) profile= \(actor.profilePath)")
             }
+            completionHandler(tempList)
+        }
+    }
+    
+    
+
+    // load movies for genre and actors with pagination support
+    // This url combines provided conditions for generes and actors
+    func loadMovies(for genresIDs:[Int],actorsIDs:[Int] ,pageNumber:Int, completionHandler: @escaping ([Movie],Int)-> Void )
+    {
+        let selectedGenres   = prepareGenresList(listOfIDs: genresIDs)
+        let selectedActors = prepareActorsList(listOfIDs: actorsIDs)
+        
+        var tempList = [Movie]()
+        let urlString = "https://api.themoviedb.org/3/discover/movie?api_key=ae0b9efa77149c7c5c55edae3d42c5a9\(selectedGenres)&page=\(pageNumber)&sort_by=popularity.desc\(selectedActors)"
+        
+        print(urlString)
+        apiClient.downloadJSONNEW(urlString: urlString) {
+            json in
+            
+            if let list = json["results"] as? [[String:AnyObject]] {
+                
+                for movie in list {
+                    if let movieTitle = movie["title"] as? String , let id = movie["id"] as? Int
+                    {
+                        let movieToAdd = Movie(id: id, title: movieTitle)
+                        tempList.append(movieToAdd)
+                        print("Movie: \(movieTitle) ")
+                    }
+                }
+            }
+            var totalPages = 0
+            if let pageCount = json["total_pages"] as? Int{
+                print ("total pages = \(pageCount)")
+                totalPages = pageCount
+            }
+            print(totalPages)
+            completionHandler(tempList,totalPages)
             
         }
-        task.resume()
+    }
+
+    func addUser() {
+        if (!usersWhoFinishedSelection.contains(currentUserSelecting)) {
+            usersWhoFinishedSelection.append(currentUserSelecting)
+        }
+    }
+    
+    // start over action and empty all selection arrays
+    func startOver() {
+        selectedGenres.removeAll()
+        selectedActors.removeAll()
+        selectedMovies.removeAll()
+        
+        selectedMoviesList.removeAll()
+        votedMovies.removeAll()
+        
+        
+        usersWhoFinishedSelection.removeAll()
+        currentUserSelecting = .noOne
+    }
+    
+    // Helper Functions
+    // Prepare actors list
+    func prepareActorsList(listOfIDs:[Int]) ->String {
+        var selectedText = ""
+        if (listOfIDs.count > 0) {
+            selectedText += "&with_cast="
+            if (listOfIDs.count > 1)
+            {
+                for i in 0...listOfIDs.count-2 {
+                    selectedText += "\(actorsList[listOfIDs[i]].id),"
+                }
+                selectedText += "\(actorsList[listOfIDs[listOfIDs.count-1]].id)"
+            }
+            else {
+                selectedText += "\(actorsList[listOfIDs[0]].id)"
+            }
+        }
+        print(selectedText)
+        return selectedText
+    }
+    
+    // Prepare generes list
+    func prepareGenresList(listOfIDs:[Int]) ->String {
+        var selectedText = ""
+        if (listOfIDs.count > 0) {
+            selectedText += "&with_genres="
+            if (listOfIDs.count > 1)
+            {
+                for i in 0...listOfIDs.count-2 {
+                    selectedText += "\(genresList[listOfIDs[i]].id),"
+                }
+                selectedText += "\(genresList[listOfIDs[listOfIDs.count-1]].id)"
+            }
+            else {
+                selectedText += "\(genresList[listOfIDs[0]].id)"
+            }
+        }
+        return selectedText
     }
 
 }
-/*
-Query url:
-- search for an actor:
-https://api.themoviedb.org/3/search/person?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&language=en-US&query=%22Tom%20Hanks%22
 
-- Get list of movies for a year , but year doesnt work very well
- https://api.themoviedb.org/3/discover/movie?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&year=2001
 
-- Get list of movies for a genre 
- https://api.themoviedb.org/3/discover/movie?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&with_genres=28&page=1
 
-- Get list geners 
- https://api.themoviedb.org/3/genre/movie/list?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&language=en-US
-
-- Get list of images for a movie 
-https://api.themoviedb.org/3/movie/188927/images?api_key=ae0b9efa77149c7c5c55edae3d42c5a9
- 
-- Get list of popular actors
- https://api.themoviedb.org/3/person/popular?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&language=en-US
- 
- 
- 
- 
-- Get image for a movie based on image url
-https://image.tmdb.org/t/p/w300/lQtNOJVScqqYhapr80JYUnChQeg.jpg
- 
-- Get list of movies for an actor based on person id
- https://api.themoviedb.org/3/person/31/movie_credits?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&language=en-US
- 
- - get list of movies for actor and year providing you the actor id
- ----be careful to use primary_release_year instead of year---
- 
- https://api.themoviedb.org/3/discover/movie?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&with_cast=31&year=2010
- 
- - same but with sort based on poularity
- https://api.themoviedb.org/3/discover/movie?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&with_cast=31&year=2010&sort_by=popularity.desc
- 
- - adding genre to discover
- https://api.themoviedb.org/3/discover/movie?api_key=ae0b9efa77149c7c5c55edae3d42c5a9&primary_release_year=2013&sort_by=popularity.desc&with_genres=28
- 
- */

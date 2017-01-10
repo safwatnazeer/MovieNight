@@ -338,6 +338,13 @@
                                 <segue destination="lPf-nk-s61" kind="show" identifier="showResutls" id="vVK-ep-21e"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="SmB-6H-Ect"/>
+                        <barButtonItem title="Start Over" style="done" id="2x8-L2-YWI">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="startOver:" destination="3rf-Yl-fgD" id="vKo-wH-9Wd"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="1eq-oX-SOX"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Movie Night" id="0ME-KM-6dT">
