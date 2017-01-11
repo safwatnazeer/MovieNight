@@ -348,7 +348,7 @@
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="1eq-oX-SOX"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Movie Night" id="0ME-KM-6dT">
-                        <barButtonItem key="backBarButtonItem" title=" " id="n6L-KQ-dMq"/>
+                        <barButtonItem key="backBarButtonItem" title="Back" id="n6L-KQ-dMq"/>
                     </navigationItem>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <connections>
